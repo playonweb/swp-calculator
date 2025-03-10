@@ -71,7 +71,6 @@
                     <div class="p-2 rounded-full bg-green-600">
                         <img src="https://playonweb.org/favicon.ico" alt="Logo" height="50px" class="h-12">
                     </div>
-
                     <span class="text-3xl font-bold text-green-600">SWP Calculator</span>
                 </h1>
             </div>
@@ -81,8 +80,7 @@
                     <label for="initialInvestment" class="block text-gray-700 font-semibold mb-1">Initial
                         Investment ($)</label>
                     <input v-model="inputs.initialInvestment.value" type="text" id="initialInvestment"
-                        placeholder="e.g., 500000" @input="validateNumber('initialInvestment')"
-                        @blur="formatNumberInput('initialInvestment')"
+                        placeholder="e.g., 500 000" @input="validateNumber('initialInvestment')"
                         class="w-full text-black py-2 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         :class="{'text-white':isDarkMode}">
                     <span class="text-xs text-gray-500">
@@ -98,7 +96,7 @@
                         (%)
                     </label>
                     <input v-model="inputs.annualReturn.value" type="text" id="annualReturn" placeholder="e.g., 7"
-                        @input="validateNumber('annualReturn')" @blur="formatNumberInput('annualReturn')"
+                        @input="validateNumber('annualReturn')"
                         class="w-full text-black py-2 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         :class="{'text-white':isDarkMode}">
                     <span class="text-xs text-gray-500">
@@ -112,7 +110,6 @@
                         (Years)</label>
                     <input v-model="inputs.withdrawalDuration.value" type="text" id="withdrawalDuration"
                         placeholder="e.g., 50" @input="validateNumber('withdrawalDuration')"
-                        @blur="formatNumberInput('withdrawalDuration')"
                         class="w-full text-black py-2 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         :class="{'text-white':isDarkMode}">
                     <span class="text-xs text-gray-500">
@@ -126,17 +123,16 @@
                         Monthly Withdrawal ($)
                         |
                         <span class="text-sm"
-                            @click="inputs.monthlyWithdrawal.value = monthlyReturnAmount"    
+                            @click="inputs.monthlyWithdrawal.value = formatNumber(monthlyReturnAmount, 0)"    
                         >
                             Max
                             <span class="text-green-600 underline" :class="{'text-red-600': monthlyWithdrawalPercentage >= monthlyReturn, 'text-green-600': monthlyWithdrawal > 0}">
-                                {{ monthlyReturnAmount.toFixed(0) }}
+                                {{ formatNumber(monthlyReturnAmount, 0) }}
                             </span>
                         </span>
                     </label>
                     <input v-model="inputs.monthlyWithdrawal.value" type="text" id="monthlyWithdrawal"
-                        placeholder="e.g., 1000" @input="validateNumber('monthlyWithdrawal')"
-                        @blur="formatNumberInput('monthlyWithdrawal')"
+                        placeholder="e.g., 1 000" @input="validateNumber('monthlyWithdrawal')"
                         class="w-full text-black py-2 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         :class="{'text-white':isDarkMode}">
                     <span class="text-xs text-gray-500">
@@ -180,28 +176,28 @@
                 return {
                     isDarkMode: localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
                     inputs: {
-                        initialInvestment: { value: 500000, placeholder: 'e.g., 500000' },
-                        annualReturn: { value: 7, placeholder: 'e.g., 7' },
-                        withdrawalDuration: { value: 50, placeholder: 'e.g., 50' },
-                        monthlyWithdrawal: { value: 1000, placeholder: 'e.g., 1000' }
+                        initialInvestment: { value: '500 000', placeholder: 'e.g., 500 000' },
+                        annualReturn: { value: '7', placeholder: 'e.g., 7' },
+                        withdrawalDuration: { value: '50', placeholder: 'e.g., 50' },
+                        monthlyWithdrawal: { value: '1 000', placeholder: 'e.g., 1 000' }
                     }
                 };
             },
             computed: {
                 initialInvestment() {
-                    return parseFloat(this.inputs.initialInvestment.value) || 0;
+                    return parseFloat(this.inputs.initialInvestment.value.replace(/\s/g, '')) || 0;
                 },
                 annualReturn() {
-                    return parseFloat(this.inputs.annualReturn.value) || 0;
+                    return parseFloat(this.inputs.annualReturn.value.replace(/\s/g, '')) || 0;
                 },
                 withdrawalDuration() {
-                    return parseFloat(this.inputs.withdrawalDuration.value) || 0;
+                    return parseFloat(this.inputs.withdrawalDuration.value.replace(/\s/g, '')) || 0;
                 },
                 monthlyWithdrawal() {
-                    return parseFloat(this.inputs.monthlyWithdrawal.value) || 0;
+                    return parseFloat(this.inputs.monthlyWithdrawal.value.replace(/\s/g, '')) || 0;
                 },
                 monthlyWithdrawalPercentage() {
-                    return parseFloat((this.monthlyWithdrawal/this.initialInvestment * 100));
+                    return parseFloat((this.monthlyWithdrawal / this.initialInvestment * 100)) || 0;
                 },
                 monthlyReturn() {
                     return (this.annualReturn / 12);
@@ -234,8 +230,8 @@
                 }
             },
             methods: {
-                formatNumber(value) {
-                    return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                formatNumber(value, decimals = 2) {
+                    return value.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).replace(/,/g, ' ');
                 },
                 toggleDarkMode() {
                     this.isDarkMode = !this.isDarkMode;
@@ -244,19 +240,26 @@
                 },
                 validateNumber(key) {
                     let value = this.inputs[key].value;
-                    value = value.replace(/[^0-9.]/g, '');
+                    // Allow numbers, dots, and spaces
+                    value = value.replace(/[^0-9.\s]/g, '');
                     if (value.split('.').length > 2) {
                         value = value.slice(0, -1);
                     }
-                    this.inputs[key].value = value;
-                },
-                formatNumberInput(key) {
-                    const value = this.inputs[key].value.replace(/[^0-9.]/g, '');
-                    const number = parseFloat(value);
-                    this.inputs[key].value = isNaN(number) ? '' : number.toString();
+
+                    // Apply formatting for currency fields reactively
+                    if (key === 'initialInvestment' || key === 'monthlyWithdrawal') {
+                        const cleanValue = value.replace(/\s/g, '');
+                        const number = parseFloat(cleanValue);
+                        if (!isNaN(number)) {
+                            this.inputs[key].value = number.toLocaleString('en-US', { maximumFractionDigits: 2 }).replace(/,/g, ' ');
+                        } else {
+                            this.inputs[key].value = value; // Keep as-is if not a valid number yet
+                        }
+                    } else {
+                        this.inputs[key].value = value; // Non-currency fields (no formatting)
+                    }
                 }
-            }
-            ,
+            },
             mounted() {
                 if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                     this.isDarkMode = true;
