@@ -113,7 +113,7 @@
             return {
                 isDarkMode: localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
                 inputs: {
-            initialInvestment: { label: 'Initial Investment ($)', value: 100000, placeholder: 'e.g., 100000', description: 'Starting amount' },
+            initialInvestment: { label: 'Initial Investment ($)', value: 500000, placeholder: 'e.g., 100000', description: 'Starting amount' },
             annualReturn: { label: 'Annual Return (%)', value: 7, placeholder: 'e.g., 7', description: 'Estimated yearly growth' },
             withdrawalDuration: { label: 'Withdrawal Duration (Years)', value: 20, placeholder: 'e.g., 20', description: 'Planned withdrawal period' },
             monthlyWithdrawal: { label: 'Monthly Withdrawal ($)', value: 1000, placeholder: 'e.g., 1000', description: 'Fixed withdrawal amount' }          
@@ -147,9 +147,6 @@
                 let balance = parseFloat(this.initialInvestment);
                 for (let i = 0; i < this.totalWithdrawalsCount; i++) {
                     balance = balance * (1 + monthlyRate) - this.monthlyWithdrawal;
-                    if(balance<0){
-                        return 0;
-                    }
                 }
                 return balance;
             },
