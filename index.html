@@ -25,7 +25,7 @@
         <h2 class="text-xl font-semibold mb-4">Results</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <p><span class="font-bold">Total Withdrawals:</span> ${{ formatNumber(totalWithdrawals) }}</p>
-          <p><span class="font-bold">Monthly Return:</span> {{ (annualReturn / 12).toFixed(2) }}%</p>
+          <p><span class="font-bold">Monthly Return:</span> {{ monthlyReturn }}%</p>
           <p :class="{'text-red-600': remainingBalance <= 0, 'text-green-600': remainingBalance > 0}">
             <span class="font-bold">Remaining Balance:</span> ${{ formatNumber(remainingBalance) }}
           </p>
@@ -61,6 +61,9 @@
         annualReturn() { return this.inputs.annualReturn.value; },
         withdrawalDuration() { return this.inputs.withdrawalDuration.value; },
         monthlyWithdrawal() { return this.inputs.monthlyWithdrawal.value; },
+        monthlyReturn(){           
+          return ((this.inputs.annualReturn.value / 12).toFixed(2)) + '%';
+        },
         monthlyRate() { return this.annualReturn / 100 / 12; },
         totalWithdrawalsCount() { return this.withdrawalDuration * 12; },
         totalWithdrawals() { return this.monthlyWithdrawal * this.totalWithdrawalsCount; },
