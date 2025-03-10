@@ -14,7 +14,9 @@
             color: white;
         }
 
-        .dark .bg-white, .dark .border, .dark .focus\:border-blue-500{
+        .dark .bg-white,
+        .dark .border,
+        .dark .focus\:border-blue-500 {
             background-color: #334155 !important;
         }
 
@@ -33,19 +35,23 @@
         .dark .text-blue-600 {
             color: lightgreen;
         }
+
         .dark .text-white {
             color: white;
         }
-        .dark label{
+
+        .dark label {
             color: #c4c4c4 !important;
         }
-        input{
+
+        input {
             background-color: white;
         }
     </style>
 </head>
 
-<body :class="{ 'dark': isDarkMode }" class="bg-gray-50 transition-colors duration-300 dark:bg-gray-900 dark:text-gray-300">
+<body :class="{ 'dark': isDarkMode }"
+    class="bg-gray-50 transition-colors duration-300 dark:bg-gray-900 dark:text-gray-300">
     <div id="app" class="min-h-screen flex items-center justify-center p-4">
         <div class="absolute top-4 right-4">
             <button @click="toggleDarkMode" class="focus:outline-none">
@@ -61,139 +67,144 @@
                 </svg>
             </button>
         </div>
-        <div :class="{'dark':isDarkMode}" class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6 transition-colors duration-300">
+        <div :class="{'dark':isDarkMode}"
+            class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6 transition-colors duration-300">
             <div class="text-3xl font-bold text-center text-blue-600 mb-6 transition-colors duration-300">
                 <h1 class="flex items-center space-x-2 mt-4">
                     <div class="p-2 rounded-full bg-green-600">
-                      <img src="https://playonweb.org/favicon.ico" alt="Logo" height="50px" class="h-12">
+                        <img src="https://playonweb.org/favicon.ico" alt="Logo" height="50px" class="h-12">
                     </div>
 
                     <span class="text-3xl font-bold text-green-600">SWP Calculator</span>
                 </h1>
             </div>
-           
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-        <div v-for="(input, key) in inputs" :key="key">
-          <label :for="key" class="block text-gray-700 font-semibold mb-1">{{ input.label }}</label>
-          <input v-model="inputs[key].value" type="text" :id="key" :placeholder="input.placeholder"
-            @input="validateNumber(key)" @blur="formatNumberInput(key)"
-            class="w-full text-black py-2 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            :class="{'text-white':isDarkMode}"
-            >
-          <span class="text-xs text-gray-500">{{ input.description }}</span>
+                <div v-for="(input, key) in inputs" :key="key">
+                    <label :for="key" class="block text-gray-700 font-semibold mb-1">{{ input.label }}</label>
+                    <input v-model="inputs[key].value" type="text" :id="key" :placeholder="input.placeholder"
+                        @input="validateNumber(key)" @blur="formatNumberInput(key)"
+                        class="w-full text-black py-2 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        :class="{'text-white':isDarkMode}">
+                    <span class="text-xs text-gray-500">{{ input.description }}</span>
+                </div>
+            </div>
+
+            <div class="bg-green-100 p-2 text-black rounded-lg transition-colors duration-300"
+                :class="{'bg-gray-100 text-white':isDarkMode}">
+                <h2 :class="{'text-white':isDarkMode}"
+                    class="text-xl font-semibold mb-4 transition-colors duration-300">Results</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <p class="transition-colors duration-300"><span class="font-bold">Total Withdrawals:</span> ${{
+                        formatNumber(totalWithdrawals) }}
+                    </p>
+                    <p><span class="font-bold">Monthly Return:</span> {{ monthlyReturn }}</p>
+                    <p :class="{'text-red-600': remainingBalance <= 0, 'text-green-600': remainingBalance > 0}">
+                        <span class="font-bold">Remaining Balance:</span> ${{ formatNumber(remainingBalance) }}
+                    </p>
+                    <p><span class="font-bold">Total Withdrawal Period:</span> {{ withdrawalDuration * 12 }} months</p>
+                </div>
+
+                <div class="mt-4 pt-4 border-t" v-if="remainingBalance <= 0 && yearsLastingFunds < withdrawalDuration">
+                    <p class="text-red-600 font-semibold">Warning: Funds deplete before plan ends.</p>
+                    <p>Your funds last approximately {{ yearsLastingFunds.toFixed(1) }} years.</p>
+                </div>
+                <div v-else-if="remainingBalance > 0" class="mt-4 pt-4 border-t text-green-600 font-semibold">
+                    <p>Your investment lasts the full duration.</p>
+                </div>
+            </div>
         </div>
-      </div>
-      
-      <div class="bg-green-100 p-2 text-black rounded-lg transition-colors duration-300" :class="{'bg-gray-100 text-white':isDarkMode}">
-        <h2 :class="{'text-white':isDarkMode}" class="text-xl font-semibold mb-4 transition-colors duration-300">Results</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <p class="transition-colors duration-300"><span class="font-bold">Total Withdrawals:</span> ${{ formatNumber(totalWithdrawals) }}
-          </p>          <p><span class="font-bold">Monthly Return:</span> {{ monthlyReturn }}</p>
-          <p :class="{'text-red-600': remainingBalance <= 0, 'text-green-600': remainingBalance > 0}">
-            <span class="font-bold">Remaining Balance:</span> ${{ formatNumber(remainingBalance) }}
-          </p>
-          <p><span class="font-bold">Total Withdrawal Period:</span> {{ withdrawalDuration * 12 }} months</p>
-        </div>
-        
-        <div class="mt-4 pt-4 border-t" v-if="remainingBalance <= 0 && yearsLastingFunds < withdrawalDuration">
-          <p class="text-red-600 font-semibold">Warning: Funds deplete before plan ends.</p>
-          <p>Your funds last approximately {{ yearsLastingFunds.toFixed(1) }} years.</p>
-        </div>
-        <div v-else-if="remainingBalance > 0" class="mt-4 pt-4 border-t text-green-600 font-semibold">
-          <p>Your investment lasts the full duration.</p>
-        </div>
-      </div>
     </div>
-  </div>
 
     <script>
-    const { createApp } = Vue;
-    createApp({
-        data() {
-            return {
-                isDarkMode: localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
-                inputs: {
-            initialInvestment: { label: 'Initial Investment ($)', value: 500000, placeholder: 'e.g., 500000', description: 'Starting amount' },
-            annualReturn: { label: 'Annual Return (%)', value: 7, placeholder: 'e.g., 7', description: 'Estimated yearly growth' },
-            withdrawalDuration: { label: 'Withdrawal Duration (Years)', value: 50, placeholder: 'e.g., 50', description: 'Planned withdrawal period' },
-            monthlyWithdrawal: { label: 'Monthly Withdrawal ($)', value: 1000, placeholder: 'e.g., 1000', description: 'Fixed withdrawal amount' }          
-          }
-        };
-        },
-        computed: {
-            initialInvestment() {
-                return parseFloat(this.inputs.initialInvestment.value) || 0;
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    isDarkMode: localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
+                    inputs: {
+                        initialInvestment: { label: 'Initial Investment ($)', value: 500000, placeholder: 'e.g., 500000', description: 'Starting amount' },
+                        annualReturn: { label: 'Annual Return (%)', value: 7, placeholder: 'e.g., 7', description: 'Estimated yearly growth' },
+                        withdrawalDuration: { label: 'Withdrawal Duration (Years)', value: 50, placeholder: 'e.g., 50', description: 'Planned withdrawal period' },
+                        monthlyWithdrawal: { label: 'Monthly Withdrawal ($)', value: 1000, placeholder: 'e.g., 1000', description: 'Fixed withdrawal amount' }
+                    }
+                };
             },
-            annualReturn() {
-                return parseFloat(this.inputs.annualReturn.value) || 0;
-            },
-            withdrawalDuration() {
-                return parseFloat(this.inputs.withdrawalDuration.value) || 0;
-            },
-            monthlyWithdrawal() {
-                return parseFloat(this.inputs.monthlyWithdrawal.value) || 0;
-            },
-            monthlyReturn() {
-                return (this.annualReturn / 12).toFixed(2) + '%';
-            },
-            totalWithdrawalsCount() {
-                return this.withdrawalDuration * 12;
-            },
-            totalWithdrawals() {
-                return this.monthlyWithdrawal * this.totalWithdrawalsCount;
-            },
-            remainingBalance() {
-                const monthlyRate = this.annualReturn / 100 / 12;
-                let balance = parseFloat(this.initialInvestment);
-                for (let i = 0; i < this.totalWithdrawalsCount; i++) {
-                    balance = balance * (1 + monthlyRate) - this.monthlyWithdrawal;
+            computed: {
+                initialInvestment() {
+                    return parseFloat(this.inputs.initialInvestment.value) || 0;
+                },
+                annualReturn() {
+                    return parseFloat(this.inputs.annualReturn.value) || 0;
+                },
+                withdrawalDuration() {
+                    return parseFloat(this.inputs.withdrawalDuration.value) || 0;
+                },
+                monthlyWithdrawal() {
+                    return parseFloat(this.inputs.monthlyWithdrawal.value) || 0;
+                },
+                monthlyReturn() {
+                    return (this.annualReturn / 12).toFixed(2) + '%';
+                },
+                totalWithdrawalsCount() {
+                    return this.withdrawalDuration * 12;
+                },
+                totalWithdrawals() {
+                    return this.monthlyWithdrawal * this.totalWithdrawalsCount;
+                },
+                remainingBalance() {
+                    const monthlyRate = this.annualReturn / 100 / 12;
+                    let balance = parseFloat(this.initialInvestment);
+                    for (let i = 0; i < this.totalWithdrawalsCount; i++) {
+                        balance = balance * (1 + monthlyRate) - this.monthlyWithdrawal;
+                    }
+                    return balance;
+                },
+                yearsLastingFunds() {
+                    const monthlyRate = this.annualReturn / 100 / 12;
+                    let balance = parseFloat(this.initialInvestment), months = 0;
+                    while (balance > 0 && months < this.withdrawalDuration * 12) {
+                        balance = balance * (1 + monthlyRate) - this.monthlyWithdrawal;
+                        months++;
+                    }
+                    return months / 12;
                 }
-                return balance;
             },
-            yearsLastingFunds() {
-                const monthlyRate = this.annualReturn / 100 / 12;
-                let balance = parseFloat(this.initialInvestment), months = 0;
-                while (balance > 0 && months < this.withdrawalDuration * 12) {
-                    balance = balance * (1 + monthlyRate) - this.monthlyWithdrawal;
-                    months++;
+            methods: {
+                formatNumber(value) {
+                    return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                },
+                toggleDarkMode() {
+                    this.isDarkMode = !this.isDarkMode;
+                    document.documentElement.classList.toggle('dark', this.isDarkMode);
+                    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+                },
+                validateNumber(key) {
+                    let value = this.inputs[key].value;
+                    value = value.replace(/[^0-9.]/g, '');
+                    if (value.split('.').length > 2) {
+                        value = value.slice(0, -1);
+                    }
+                    this.inputs[key].value = value;
+                },
+                formatNumberInput(key) {
+                    const value = this.inputs[key].value.replace(/[^0-9.]/g, '');
+                    const number = parseFloat(value);
+                    this.inputs[key].value = isNaN(number) ? '' : number.toString();
                 }
-                return months / 12;
             }
-        },
-        methods: {
-            formatNumber(value) {
-                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            },
-            toggleDarkMode() {
-                this.isDarkMode = !this.isDarkMode;
-                document.documentElement.classList.toggle('dark', this.isDarkMode);
-                localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
-            },
-            validateNumber(key) {
-                let value = this.inputs[key].value;
-                value = value.replace(/[^0-9.]/g, '');
-                if (value.split('.').length > 2) {
-                    value = value.slice(0, -1);
+            ,
+            mounted() {
+                if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    this.isDarkMode = true;
+                    document.documentElement.classList.add('dark');
+                } else {
+                    this.isDarkMode = false;
+                    document.documentElement.classList.remove('dark');
                 }
-                this.inputs[key].value = value;
-            },
-            formatNumberInput(key) {
-                const value = this.inputs[key].value.replace(/[^0-9.]/g, '');
-                const number = parseFloat(value);
-                this.inputs[key].value = isNaN(number) ? '' : number.toString();
             }
-        }
-    ,
-        mounted() {
-            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                this.isDarkMode = true;
-                document.documentElement.classList.add('dark');
-            } else {
-                this.isDarkMode = false;
-                document.documentElement.classList.remove('dark');
-            }
-        }
-    }).mount('#app');
-  </script>
+        }).mount('#app');
+    </script>
 </body>
+
 </html>
