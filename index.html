@@ -113,9 +113,9 @@
             return {
                 isDarkMode: localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
                 inputs: {
-            initialInvestment: { label: 'Initial Investment ($)', value: 500000, placeholder: 'e.g., 100000', description: 'Starting amount' },
+            initialInvestment: { label: 'Initial Investment ($)', value: 500000, placeholder: 'e.g., 500000', description: 'Starting amount' },
             annualReturn: { label: 'Annual Return (%)', value: 7, placeholder: 'e.g., 7', description: 'Estimated yearly growth' },
-            withdrawalDuration: { label: 'Withdrawal Duration (Years)', value: 20, placeholder: 'e.g., 20', description: 'Planned withdrawal period' },
+            withdrawalDuration: { label: 'Withdrawal Duration (Years)', value: 50, placeholder: 'e.g., 50', description: 'Planned withdrawal period' },
             monthlyWithdrawal: { label: 'Monthly Withdrawal ($)', value: 1000, placeholder: 'e.g., 1000', description: 'Fixed withdrawal amount' }          
           }
         };
