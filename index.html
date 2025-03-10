@@ -11,11 +11,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
-        .dark {
-            background-color: #1e293b;
-            color: white;
-        }
-
         .dark .bg-white,
         .dark .border,
         .dark .focus\:border-blue-500 {
@@ -52,25 +47,25 @@
     </style>
 </head>
 
-<body :class="{ 'dark': isDarkMode }"
-    class="bg-gray-50 transition-colors duration-300 dark:bg-gray-900 dark:text-gray-300">
+<body :class="{ 'dark bg-gradient-to-l from-stone-800 to-stone-950': isDarkMode }"
+    class="bg-gradient-to-r from-stone-500 to-stone-700 transition-colors duration-300">
     <div id="app" class="min-h-screen flex items-center justify-center p-4">
         <div class="absolute top-4 right-4">
-            <button @click="toggleDarkMode" class="focus:outline-none">
-                <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+            <button @click="toggleDarkMode" class="focus:outline-none p-1 m-1 rounded-full bg-gradient-to-r">
+                <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                    viewBox="0 0 24 24" stroke="yellow">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
                 <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+                    viewBox="0 0 24 24" stroke="white">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
             </button>
         </div>
-        <div :class="{'dark':isDarkMode}"
-            class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6 transition-colors duration-300">
+        <div :class="{'dark bg-gradient-to-l from-slate-800 to-slate-950':isDarkMode}"
+            class="w-full max-w-4xl shadow-3xl rounded-3xl p-6 transition-colors duration-300 bg-gradient-to-r from-slate-100 to-slate-200">
             <div class="text-3xl font-bold text-center text-blue-600 mb-6 transition-colors duration-300">
                 <h1 class="flex items-center space-x-2 mt-4">
                     <div class="p-2 rounded-full bg-green-600">
@@ -152,8 +147,8 @@
                 </div>
             </div>
 
-            <div class="bg-green-100 p-2 text-black rounded-lg transition-colors duration-300"
-                :class="{'bg-gray-100 text-white':isDarkMode}">
+            <div class="bg-gradient-to-r from-slate-200 to-slate-200 p-4 text-black shadow-3xl rounded-3xl transition-colors duration-300"
+                :class="{'bg-gradient-to-l from-slate-700 to-slate-800 text-white':isDarkMode}">
                 <h2 :class="{'text-white':isDarkMode}"
                     class="text-xl font-semibold mb-4 transition-colors duration-300">Results</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
