@@ -146,7 +146,7 @@
                     <span class="text-xs text-gray-500">
                         Fixed withdrawal amount
                         |
-                        <span class="text-green-600" :class="{'text-red-600': monthlyWithdrawalPercentage >= monthlyReturn, 'text-green-600': monthlyWithdrawal > 0}">{{ monthlyWithdrawalPercentage.toFixed(4) }}%</span>
+                        <span class="text-green-600" :class="{'text-yellow-600': monthlyWithdrawalPercentage >= monthlyReturn, 'text-green-600': monthlyWithdrawal > 0}">{{ monthlyWithdrawalPercentage.toFixed(4) }}%</span>
                     </span>
                 </div>
             </div>
