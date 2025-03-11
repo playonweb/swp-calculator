@@ -3,15 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="SWP Calculator: Calculate your systematic withdrawal plan with ease using PlayOnWeb's advanced SWP calculator.">
-    <meta name="keywords" content="swp, calculator, simulator, systematic withdrawal plan, playonweb, investment, finance">
+    <meta name="description"
+        content="SWP Calculator: Calculate your systematic withdrawal plan with ease using PlayOnWeb's advanced SWP calculator.">
+    <meta name="keywords"
+        content="swp, calculator, simulator, systematic withdrawal plan, playonweb, investment, finance">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://playonweb.org/favicon.ico" type="image/x-icon">
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
-    
+
     <title>SWP Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -23,6 +25,7 @@
             font-style: normal;
             font-size: 25px;
         }
+
         .dark .bg-white,
         .dark .border,
         .dark .focus\:border-blue-500 {
@@ -97,14 +100,18 @@
                         :class="{'text-white':isDarkMode}">
                     <span class="text-lg text-gray-500">
                         Returns
-                        ({{ (remainingBalance / initialInvestment * 100).toFixed(2) }}%) = 
+                        ({{
+                            (remainingBalance / initialInvestment * 100) < 10000000
+                                ? formatNumber((remainingBalance / initialInvestment * 100).toFixed(2))
+                                : convertToBMK(remainingBalance / initialInvestment * 100)
+                        }}%) =
                         <span :class="{'text-red-600': remainingBalance <= 0, 'text-green-600': remainingBalance > 0}">
                             ${{ convertToBMK(remainingBalance) }}
                         </span>
                     </span>
                 </div>
                 <div>
-                    <label for="annualReturn" class="block text-gray-700 font-semibold mb-1">Returns Annually 
+                    <label for="annualReturn" class="block text-gray-700 font-semibold mb-1">Returns Annually
                         (%)
                     </label>
                     <input v-model="inputs.annualReturn.value" type="text" id="annualReturn" placeholder="e.g., 7"
@@ -114,7 +121,12 @@
                     <span class="text-lg text-gray-500">
                         Estimated yearly growth
                         |
-                        <span class="text-green-600">Monthly ({{monthlyReturn.toFixed(4)}}%)</span>
+                        <span class="text-green-600">Monthly 
+                            ({{
+                                monthlyReturn < 10000000
+                                    ? formatNumber(monthlyReturn.toFixed(2)) 
+                                    : convertToBMK(monthlyReturn)
+                            }}%)</span>
                     </span>
                 </div>
                 <div>
@@ -125,7 +137,8 @@
                             <span class="text-lg">
                                 Max
                             </span>
-                            <span class="text-lg text-red-600 underline cursor-pointer" @click="inputs.withdrawalDuration.value = yearsLastingFunds.toFixed(0)">
+                            <span class="text-lg text-red-600 underline cursor-pointer"
+                                @click="inputs.withdrawalDuration.value = yearsLastingFunds.toFixed(0)">
                                 {{ yearsLastingFunds.toFixed(1) }}
                             </span>
                         </span>
@@ -145,11 +158,15 @@
                         Monthly Withdrawal ($)
                         |
                         <span class="text-lg"
-                            @click="inputs.monthlyWithdrawal.value = formatNumber(monthlyReturnAmount, 0)"    
-                        >
+                            @click="inputs.monthlyWithdrawal.value = formatNumber(monthlyReturnAmount, 0)">
                             Max
-                            <span class="text-green-600 underline cursor-pointer" :class="{'text-yellow-600': monthlyWithdrawalPercentage >= monthlyReturn, 'text-green-600': monthlyWithdrawal > 0}">
-                                {{ formatNumber(monthlyReturnAmount, 0) }}
+                            <span class="text-green-600 underline cursor-pointer"
+                                :class="{'text-yellow-600': monthlyWithdrawalPercentage >= monthlyReturn, 'text-green-600': monthlyWithdrawal > 0}">
+                                {{
+                                    <!-- formatNumber(monthlyReturnAmount, 0) -->
+                                    monthlyReturnAmount < 10000000 ? formatNumber(monthlyReturnAmount.toFixed(2)) :
+                                        convertToBMK(monthlyReturnAmount)
+                                }}
                             </span>
                         </span>
                     </label>
@@ -160,7 +177,13 @@
                     <span class="text-lg text-gray-500">
                         Fixed withdrawal amount
                         |
-                        <span class="text-green-600" :class="{'text-yellow-600': monthlyWithdrawalPercentage >= monthlyReturn, 'text-green-600': monthlyWithdrawal > 0}">{{ monthlyWithdrawalPercentage.toFixed(4) }}%</span>
+                        <span class="text-green-600"
+                            :class="{'text-yellow-600': monthlyWithdrawalPercentage >= monthlyReturn, 'text-green-600': monthlyWithdrawal > 0}">
+                            {{
+                                monthlyWithdrawalPercentage < 10000000
+                                    ? formatNumber(monthlyWithdrawalPercentage.toFixed(2))
+                                    : convertToBMK(monthlyWithdrawalPercentage)
+                            }}%</span>
                     </span>
                 </div>
             </div>
@@ -170,14 +193,18 @@
                 <h2 :class="{'text-white':isDarkMode}"
                     class="text-xl font-semibold mb-4 transition-colors duration-300">Results</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <p class="transition-colors duration-300"><span class="font-bold">Total Withdrawals:</span> ${{ formatNumber(totalWithdrawals) }}
-                    </p>
-                    <p>
-                        <span class="font-bold">Remaining Balance:</span>
-                        <span :class="{'text-red-600': remainingBalance <= 0, 'text-green-600': remainingBalance > 0}">
-                            ${{ formatNumber(remainingBalance.toFixed(2)) }}
-                        </span>
-                    </p>
+                    <p class="transition-colors duration-300"><span class="font-bold">Total Withdrawals:</span>
+                        ${{
+                        totalWithdrawals < 10000000 ? formatNumber(totalWithdrawals.toFixed(2)) :
+                            convertToBMK(totalWithdrawals) }} </p>
+                            <p>
+                                <span class="font-bold">Remaining Balance:</span>
+                                <span
+                                    :class="{'text-red-600': remainingBalance <= 0, 'text-green-600': remainingBalance > 0}">
+                                    ${{
+                                    remainingBalance < 10000000 ? formatNumber(remainingBalance.toFixed(2)) :
+                                        convertToBMK(remainingBalance) }} </span>
+                            </p>
                 </div>
 
                 <div class="mt-4 pt-4 border-t" v-if="remainingBalance <= 0 && yearsLastingFunds < withdrawalDuration">
@@ -256,13 +283,36 @@
                     return value.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).replace(/,/g, ' ');
                 },
                 convertToBMK(input) {
-                    return Math.abs(Number(input)) >= 1.0e9
-                        ? (Math.abs(Number(input)) / 1.0e9).toFixed(2) + " B"
-                        : Math.abs(Number(input)) >= 1.0e6
-                        ? (Math.abs(Number(input)) / 1.0e6).toFixed(2) + " M"
-                        : Math.abs(Number(input)) >= 1.0e3
-                        ? (Math.abs(Number(input)) / 1.0e3).toFixed(2) + " K"
-                        : Math.abs(Number(input));
+                    const num = Math.abs(Number(input));
+
+                    switch (true) {
+                        case num >= 1.0e230: return (num / 1.0e230).toFixed(2) + " Ct";  // Centillion (10^230)
+                        case num >= 1.0e207: return (num / 1.0e207).toFixed(2) + " DuVg"; // Duovigintillion (10^207)
+                        case num >= 1.0e204: return (num / 1.0e204).toFixed(2) + " UnVg"; // Unvigintillion (10^204)
+                        case num >= 1.0e180: return (num / 1.0e180).toFixed(2) + " Vg";   // Vigintillion (10^180)
+                        case num >= 1.0e150: return (num / 1.0e150).toFixed(2) + " Qad";  // Quattuordecillion (10^150)
+                        case num >= 1.0e120: return (num / 1.0e120).toFixed(2) + " Tdc";  // Tredecillion (10^120)
+                        case num >= 1.0e100: return (num / 1.0e100).toFixed(2) + " Gg";   // Googol (10^100)
+                        case num >= 1.0e90: return (num / 1.0e90).toFixed(2) + " NoV";   // Novemdecillion (10^90)
+                        case num >= 1.0e81: return (num / 1.0e81).toFixed(2) + " OcV";   // Octodecillion (10^81)
+                        case num >= 1.0e72: return (num / 1.0e72).toFixed(2) + " SpV";   // Septendecillion (10^72)
+                        case num >= 1.0e63: return (num / 1.0e63).toFixed(2) + " SxV";   // Sexdecillion (10^63)
+                        case num >= 1.0e54: return (num / 1.0e54).toFixed(2) + " QdV";   // Quindecillion (10^54)
+                        case num >= 1.0e48: return (num / 1.0e48).toFixed(2) + " TdV";   // Tredecillion (10^48)
+                        case num >= 1.0e42: return (num / 1.0e42).toFixed(2) + " DcV";   // Duodecillion (10^42)
+                        case num >= 1.0e36: return (num / 1.0e36).toFixed(2) + " No";    // Nonillion (10^36)
+                        case num >= 1.0e30: return (num / 1.0e30).toFixed(2) + " Oc";    // Octillion (10^30)
+                        case num >= 1.0e27: return (num / 1.0e27).toFixed(2) + " Sp";    // Septillion (10^27)
+                        case num >= 1.0e24: return (num / 1.0e24).toFixed(2) + " Y";     // Yotta (10^24)
+                        case num >= 1.0e21: return (num / 1.0e21).toFixed(2) + " Z";     // Zetta (10^21)
+                        case num >= 1.0e18: return (num / 1.0e18).toFixed(2) + " E";     // Exa (10^18)
+                        case num >= 1.0e15: return (num / 1.0e15).toFixed(2) + " P";     // Peta (10^15)
+                        case num >= 1.0e12: return (num / 1.0e12).toFixed(2) + " T";     // Trillion (10^12)
+                        case num >= 1.0e9: return (num / 1.0e9).toFixed(2) + " B";      // Billion (10^9)
+                        case num >= 1.0e6: return (num / 1.0e6).toFixed(2) + " M";      // Million (10^6)
+                        case num >= 1.0e3: return (num / 1.0e3).toFixed(2) + " K";      // Thousand (10^3)
+                        default: return num;
+                    }
                 },
                 toggleDarkMode() {
                     this.isDarkMode = !this.isDarkMode;
