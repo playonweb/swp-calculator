@@ -81,7 +81,7 @@
         </div>
         <div :class="{'dark bg-gradient-to-l from-slate-800 to-slate-950':isDarkMode}"
             class="w-full max-w-4xl shadow-3xl rounded-3xl p-6 transition-colors duration-300 bg-gradient-to-r from-slate-100 to-slate-200">
-            <div class="text-3xl font-bold text-center text-blue-600 mb-6 transition-colors duration-300">
+            <div class="mb-6 transition-colors duration-300">
                 <h1 class="flex items-center space-x-2 mt-4">
                     <div class="p-2 rounded-full bg-green-600">
                         <img src="https://playonweb.org/favicon.ico" alt="Logo" height="50px" class="h-12">
@@ -160,7 +160,6 @@
                             <span class="text-green-600 underline cursor-pointer"
                                 :class="{'text-yellow-600': monthlyWithdrawalPercentage >= monthlyReturn, 'text-green-600': monthlyWithdrawal > 0}">
                                 {{
-                                <!-- formatNumber(monthlyReturnAmount, 0) -->
                                 monthlyReturnAmount < 10000000 ? formatNumber(monthlyReturnAmount.toFixed(2)) :
                                     convertToBMK(monthlyReturnAmount) }} </span>
                             </span>
@@ -182,10 +181,8 @@
                 </div>
             </div>
 
-            <div class="bg-gradient-to-r from-slate-200 to-slate-200 p-4 text-black shadow-3xl rounded-3xl transition-colors duration-300"
+            <div class="text-center bg-gradient-to-r from-slate-200 to-slate-200 p-4 text-black shadow-3xl rounded-3xl transition-colors duration-300"
                 :class="{'bg-gradient-to-l from-slate-700 to-slate-800 text-white':isDarkMode}">
-                <h2 :class="{'text-white':isDarkMode}"
-                    class="text-xl font-semibold mb-4 transition-colors duration-300">Results</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <p class="transition-colors duration-300"><span class="font-bold">Total Withdrawals:</span>
                         ${{
@@ -207,6 +204,11 @@
                 </div>
                 <div v-else-if="remainingBalance > 0" class="mt-4 pt-4 border-t text-green-600 font-semibold">
                     <p>Your investment lasts the full duration.</p>
+                    <span class="text-gray-500 text-xl">
+                        Your future is secured with monthly passive income of {{
+                            inputs.monthlyWithdrawal.value < 10000000 ? formatNumber(inputs.monthlyWithdrawal.value) :
+                                convertToBMK(inputs.monthlyWithdrawal.value) }}
+                    </span>
                 </div>
             </div>
         </div>
