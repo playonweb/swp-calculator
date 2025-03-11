@@ -111,7 +111,7 @@
                         <span class="text-sm" v-if="remainingBalance <= 0 && yearsLastingFunds < withdrawalDuration">
                             |
                             Max
-                            <span class="text-red-600 underline cursor-pointer" @click="inputs.withdrawalDuration.value = yearsLastingFunds.toFixed(2)">
+                            <span class="text-red-600 underline cursor-pointer" @click="inputs.withdrawalDuration.value = yearsLastingFunds.toFixed(0)">
                                 {{ yearsLastingFunds.toFixed(1) }}
                             </span>
                         </span>
@@ -134,7 +134,7 @@
                             @click="inputs.monthlyWithdrawal.value = formatNumber(monthlyReturnAmount, 0)"    
                         >
                             Max
-                            <span class="text-green-600 underline" :class="{'text-red-600': monthlyWithdrawalPercentage >= monthlyReturn, 'text-green-600': monthlyWithdrawal > 0}">
+                            <span class="text-green-600 underline cursor-pointer" :class="{'text-yellow-600': monthlyWithdrawalPercentage >= monthlyReturn, 'text-green-600': monthlyWithdrawal > 0}">
                                 {{ formatNumber(monthlyReturnAmount, 0) }}
                             </span>
                         </span>
