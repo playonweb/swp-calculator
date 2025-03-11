@@ -325,7 +325,7 @@
                     if (key === 'initialInvestment' || key === 'monthlyWithdrawal') {
                         const cleanValue = value.replace(/\s/g, '');
                         const number = parseFloat(cleanValue);
-                        if (!isNaN(number)) {
+                        if (!isNaN(number) && number !== 0) {
                             this.inputs[key].value = number.toLocaleString('en-US', { maximumFractionDigits: 2 }).replace(/,/g, ' ');
                         } else {
                             this.inputs[key].value = value; // Keep as-is if not a valid number yet
